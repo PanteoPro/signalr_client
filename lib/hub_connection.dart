@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:logging/logging.dart';
 
@@ -656,9 +657,11 @@ class HubConnection {
 
   void _resetKeepAliveInterval() {
     _cleanupPingTimer();
+    log('[HubConnection] reset keep alive interval');
     _pingServerTimer =
         Timer.periodic(Duration(milliseconds: keepAliveIntervalInMilliseconds),
             (Timer t) async {
+      log('[HubConnection] try toping server');
       if (_connectionState == HubConnectionState.Connected) {
         try {
           await _sendMessage(_cachedPingMessage);
@@ -871,7 +874,9 @@ class HubConnection {
   }
 
   void _cleanupPingTimer() {
+    log('[HubConnection] try to cancel ping timer');
     if (_pingServerTimer != null) {
+      log('[HubConnection] cancel ping timer');
       _pingServerTimer!.cancel();
       _pingServerTimer = null;
     }
